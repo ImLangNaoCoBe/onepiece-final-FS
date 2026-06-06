@@ -6,11 +6,17 @@ local LocalPlayer = Players.LocalPlayer
 local plr = game:GetService("Players").LocalPlayer
 local PlayerGui = plr.PlayerGui
 
-local FishingMinigameFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
-local FishingMinigameButtons = nil
-for _, i in FishingMinigameFrame:GetChildren() do
+local MainFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
+
+-- Đặt frame ở giữa =))
+MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.AnchorPoint = Vector2.new(0, 0.5)
+
+local FrameButtons = nil
+for _, i in MainFrame:GetChildren() do
     if i.Name == "Frame" and i.Transparency == 1 then
-        FishingMinigameButtons = i
+        FrameButtons = i
     end
 end
 
@@ -45,8 +51,8 @@ end
 local function clickGuiElement(btn)
     -- Tính toán tọa độ tâm (Center) của nút bấm
     if btn:FindFirstChild("UICorner") then btn.UICorner:Destroy() end
-    local posX = btn.AbsolutePosition.X + 5
-    local posY = btn.AbsolutePosition.Y + 5
+    local posX = btn.AbsolutePosition.X + (btn.AbsoluteSize.X / 2)
+    local posY = btn.AbsolutePosition.Y + (btn.AbsoluteSize.Y / 2)
     
     -- Xử lý bù trừ tọa độ nếu giao diện bị dính thanh Topbar của Roblox (khoảng 36px)
     local screenGui = getScreenGui(btn)
@@ -72,7 +78,7 @@ local function solveColorMinigame()
     local buttons = {}
     
     -- Lọc và gom toàn bộ nút bấm vào table 'buttons'
-    for _, child in pairs(FishingMinigameButtons:GetChildren()) do
+    for _, child in pairs(FrameButtons:GetChildren()) do
         if child:IsA("GuiButton") or child:IsA("TextButton") or child:IsA("ImageButton") then
             table.insert(buttons, child)
         end
