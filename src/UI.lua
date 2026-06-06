@@ -236,7 +236,7 @@ screenGui = create("ScreenGui", {
 
 mainFrame = create("Frame", {
     Name = "MainFrame",
-    Size = UDim2.new(0, 250, 0, 320),
+    Size = UDim2.new(0.17, 0, 0.36, 0),
     Position = UDim2.new(1, -270, 0.5, -160),
     BackgroundColor3 = Color3.fromRGB(25, 25, 25),
     Active = true,
@@ -290,7 +290,7 @@ create("UIListLayout", {
 })
 
 local categoryButtons = {}
-local categories = { "Movement", "Visual", "Auto", "ESP"}
+local categories = { "Movement", "Visual", "Auto"}
 
 local function updateCategoryButtonStyles()
     for categoryName, button in pairs(categoryButtons) do
@@ -304,7 +304,7 @@ end
 for _, categoryName in ipairs(categories) do
     local categoryBtn = create("TextButton", {
         Name = "Category_" .. categoryName,
-        Size = UDim2.new(0, 70, 1, 0),
+        Size = UDim2.new(0.28, 0, 1, 0),
         BackgroundColor3 = Color3.fromRGB(45, 45, 45),
         BorderSizePixel = 0,
         Text = categoryName,
