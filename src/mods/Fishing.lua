@@ -11,7 +11,7 @@ local MainFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
 -- Đặt frame ở giữa =))
 MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.AnchorPoint = Vector2.new(0, 0.5)
+MainFrame.AnchorPoint = Vector2.new(0, 0.45)
 
 local FrameButtons = nil
 for _, i in MainFrame:GetChildren() do

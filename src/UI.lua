@@ -13,7 +13,7 @@ UI.stopHandlers = {}
 UI.buttonCount = 0
 UI._connections = {}
 UI.buttonMeta = {}
-UI.activeCategory = "Movement"
+UI.activeCategory = "Auto"
 
 -- References
 local screenGui, mainFrame, scrollingFrame
@@ -236,8 +236,9 @@ screenGui = create("ScreenGui", {
 
 mainFrame = create("Frame", {
     Name = "MainFrame",
-    Size = UDim2.new(0.17, 0, 0.36, 0),
-    Position = UDim2.new(1, -270, 0.5, -160),
+    Size = UDim2.new(0.17, 0, 0.4, 0),
+    Position = UDim2.new(0.5, 0, 0.45, 0),
+    AnchorPoint = Vector2.new(0.5, 0.8),
     BackgroundColor3 = Color3.fromRGB(25, 25, 25),
     Active = true,
     Draggable = true,

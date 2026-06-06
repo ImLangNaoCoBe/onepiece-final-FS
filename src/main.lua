@@ -21,13 +21,13 @@ fetch("Utils.lua")
 fetch("UI.lua")
 -- fetch("ESP.lua") 
 
+fetch("mods/Fishing.lua")
+
 fetch("mods/Fullbright.lua")
 fetch("mods/Flight.lua")
 fetch("mods/Speed.lua")
 fetch("mods/Noclip.lua")
 fetch("mods/ClickTP.lua")
 fetch("mods/NoFog.lua")
-
-fetch("mods/Fishing.lua")
 
 print("OK All modules loaded!")
