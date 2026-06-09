@@ -354,6 +354,7 @@ UI.createButton("Fullbright", true, nil, "Visual")
 UI.createButton("NoFog", true, nil, "Visual")
 
 UI.createButton("Fishing", true, nil, "Auto")
+UI.createButton("AutoClaim", true, nil, "Auto")
 
 -- UI.createESPOptionRow("CaptureThePoint", "ESP")
 -- UI.createESPOptionRow("Scrap", "ESP")

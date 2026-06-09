@@ -22,6 +22,7 @@ fetch("UI.lua")
 -- fetch("ESP.lua") 
 
 fetch("mods/Fishing.lua")
+fetch("mods/AutoClaim.lua")
 
 fetch("mods/Fullbright.lua")
 fetch("mods/Flight.lua")

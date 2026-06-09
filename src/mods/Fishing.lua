@@ -1,24 +1,7 @@
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
-
 local LocalPlayer = Players.LocalPlayer
-local plr = game:GetService("Players").LocalPlayer
-local PlayerGui = plr.PlayerGui
-
-local MainFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
-
--- Đặt frame ở giữa =))
-MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
-MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.AnchorPoint = Vector2.new(0, 0.45)
-
-local FrameButtons = nil
-for _, i in MainFrame:GetChildren() do
-    if i.Name == "Frame" and i.Transparency == 1 then
-        FrameButtons = i
-    end
-end
 
 -- Biến kiểm soát trạng thái câu cá
 local isAutoFishing = false
@@ -31,7 +14,21 @@ local function leftClick()
     VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
 end
 
--- Hàm lấy Folder câu cá
+local function getFrameButtons()
+    local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
+    local MainFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
+    MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    MainFrame.AnchorPoint = Vector2.new(0, 0.45)
+    local FrameButtons = nil
+    for _, i in MainFrame:GetChildren() do
+        if i.Name == "Frame" and i.Transparency == 1 then
+            FrameButtons = i
+        end
+    end
+    return FrameButtons
+end
+
 local function getFishingFolder()
     return workspace:FindFirstChild("FishingRope_" .. LocalPlayer.UserId)
 end
@@ -78,7 +75,7 @@ local function solveColorMinigame()
     local buttons = {}
     
     -- Lọc và gom toàn bộ nút bấm vào table 'buttons'
-    for _, child in pairs(FrameButtons:GetChildren()) do
+    for _, child in pairs(getFrameButtons():GetChildren()) do
         if child:IsA("GuiButton") or child:IsA("TextButton") or child:IsA("ImageButton") then
             table.insert(buttons, child)
         end
