@@ -75,6 +75,12 @@ local function solveColorMinigame()
     local buttons = {}
     
     -- Lọc và gom toàn bộ nút bấm vào table 'buttons'
+    task.spawn(function()
+        for _, child in pairs(getFrameButtons():GetChildren()) do
+            child.Size = UDim2.new(0.2, 0, 0.2, 0)
+            child.SizeConstraint = Enum.SizeConstraint.RelativeXX
+        end
+    end)
     for _, child in pairs(getFrameButtons():GetChildren()) do
         if child:IsA("GuiButton") or child:IsA("TextButton") or child:IsA("ImageButton") then
             table.insert(buttons, child)
@@ -123,8 +129,13 @@ local function solveColorMinigame()
         
         -- Gọi hàm click tọa độ thực tế thay cho getconnections
         clickGuiElement(targetButton)
-        
-        task.wait(0.23) -- Chờ minigame nhận diện click trước khi mở lượt tiếp theo
+        task.spawn(function()
+            for _, child in pairs(getFrameButtons():GetChildren()) do
+                child.Size = UDim2.new(0.2, 0, 0.2, 0)
+                child.SizeConstraint = Enum.SizeConstraint.RelativeXX
+            end
+        end)
+        task.wait(0.22) -- Chờ minigame nhận diện click trước khi mở lượt tiếp theo
     else
         warn("❌ Không tìm thấy nút nào có màu khác biệt!")
     end
