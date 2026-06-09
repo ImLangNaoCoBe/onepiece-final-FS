@@ -19,7 +19,7 @@ local function getFrameButtons()
     local MainFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
     MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
     MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.AnchorPoint = Vector2.new(0, 0.45)
+    MainFrame.AnchorPoint = Vector2.new(0.5, 0.45)
     local FrameButtons = nil
     for _, i in MainFrame:GetChildren() do
         if i.Name == "Frame" and i.Transparency == 1 then
