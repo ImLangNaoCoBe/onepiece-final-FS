@@ -1,3 +1,7 @@
+-- BackgroundColor3
+-- Nút trắng: 230, 230, 230 (bấm nút này)
+-- Nút đen: 25, 25, 25
+
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local GuiService = game:GetService("GuiService")
@@ -14,26 +18,9 @@ local function leftClick()
     VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
 end
 
-local function getFrameButtons()
-    local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
-    local MainFrame = PlayerGui:FindFirstChild("FishingMinigame").Frame
-    MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
-    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.AnchorPoint = Vector2.new(0.5, 0.45)
-    local FrameButtons = nil
-    for _, i in MainFrame:GetChildren() do
-        if i.Name == "Frame" and i.Transparency == 1 then
-            FrameButtons = i
-        end
-    end
-    return FrameButtons
-end
-
 local function getFishingFolder()
     return workspace:FindFirstChild("FishingRope_" .. LocalPlayer.UserId)
 end
-
-local solving = false
 
 -- Hàm hỗ trợ tìm ScreenGui cha để check xem game có ẩn thanh Topbar không
 local function getScreenGui(obj)
@@ -48,8 +35,8 @@ end
 local function clickGuiElement(btn)
     -- Tính toán tọa độ tâm (Center) của nút bấm
     if btn:FindFirstChild("UICorner") then btn.UICorner:Destroy() end
-    local posX = btn.AbsolutePosition.X + (btn.AbsoluteSize.X / 2)
-    local posY = btn.AbsolutePosition.Y + (btn.AbsoluteSize.Y / 2)
+    local posX = btn.AbsolutePosition.X + (btn.AbsoluteSize.X / 4)
+    local posY = btn.AbsolutePosition.Y + (btn.AbsoluteSize.Y / 4)
     
     -- Xử lý bù trừ tọa độ nếu giao diện bị dính thanh Topbar của Roblox (khoảng 36px)
     local screenGui = getScreenGui(btn)
@@ -64,85 +51,51 @@ local function clickGuiElement(btn)
     VirtualInputManager:SendMouseButtonEvent(posX, posY, 0, false, game, 0)
 end
 
-local function solveColorMinigame()
-    if solving then return end
-    solving = true
+-- ==========================================
+-- Solver
+-- ==========================================
 
-    local function finish()
-        solving = false
-    end
+local MinigameSolverThread = false
 
-    local buttons = {}
-    
-    -- Lọc và gom toàn bộ nút bấm vào table 'buttons'
-    task.spawn(function()
-        for _, child in pairs(getFrameButtons():GetChildren()) do
-            child.Size = UDim2.new(0.2, 0, 0.2, 0)
-            child.SizeConstraint = Enum.SizeConstraint.RelativeXX
-        end
-    end)
-    for _, child in pairs(getFrameButtons():GetChildren()) do
-        if child:IsA("GuiButton") or child:IsA("TextButton") or child:IsA("ImageButton") then
-            table.insert(buttons, child)
-        end
-    end
+local function startMinigameSolver()
+    if MinigameSolverThread then return end
+    MinigameSolverThread = task.spawn(function()
+        while isAutoFishing do
+            task.wait(0.14)
+            
+            local PlayerGui = LocalPlayer:FindFirstChild("PlayerGui")
+            if not PlayerGui then continue end
+            
+            local minigameUI = PlayerGui:FindFirstChild("FishingMinigame")
+            
+            local MainFrame = minigameUI:WaitForChild("Frame", 3)
+            if not MainFrame then continue end
+            MainFrame.Size = UDim2.new(0.25, 0, 0.25, 0)
+            MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+            MainFrame.AnchorPoint = Vector2.new(0.5, 0.45)
 
-    -- Phải có ít nhất 3 nút để tìm điểm khác biệt
-    if #buttons < 3 then 
-        return finish() 
-    end
-
-    -- Hàm lấy màu của nút
-    local function getColor(btn)
-        return btn:IsA("ImageButton") and btn.ImageColor3 or btn.BackgroundColor3
-    end
-
-    ---------------------------------------------------------
-    -- THUẬT TOÁN GOM NHÓM VÀ ĐẾM TẦN SUẤT MÀU
-    ---------------------------------------------------------
-    local colorGroups = {}
-
-    for _, btn in ipairs(buttons) do
-        local color = getColor(btn)
-        local colorKey = tostring(color)
-        
-        if not colorGroups[colorKey] then
-            colorGroups[colorKey] = {}
-        end
-        table.insert(colorGroups[colorKey], btn)
-    end
-
-    -- Tìm nút có màu xuất hiện duy nhất 1 lần
-    local targetButton = nil
-    for _, group in pairs(colorGroups) do
-        if #group == 1 then
-            targetButton = group[1]
-            break
-        end
-    end
-
-    ---------------------------------------------------------
-    -- THỰC HIỆN CLICK BẰNG TỌA ĐỘ
-    ---------------------------------------------------------
-    if targetButton then
-        print("🎯 Đã tìm thấy nút khác biệt. Tiến hành click tọa độ...")
-        
-        -- Gọi hàm click tọa độ thực tế thay cho getconnections
-        clickGuiElement(targetButton)
-        task.spawn(function()
-            for _, child in pairs(getFrameButtons():GetChildren()) do
-                child.Size = UDim2.new(0.2, 0, 0.2, 0)
-                child.SizeConstraint = Enum.SizeConstraint.RelativeXX
+            local FrameButtons = nil
+            for _, i in MainFrame:GetChildren() do
+                if i.Name == "Frame" and i.Transparency == 1 then
+                    FrameButtons = i
+                    break
+                end
             end
-        end)
-        task.wait(0.22) -- Chờ minigame nhận diện click trước khi mở lượt tiếp theo
-    else
-        warn("❌ Không tìm thấy nút nào có màu khác biệt!")
-    end
-    
-    return finish()
-end
 
+            for _, child in pairs(FrameButtons:GetChildren()) do
+                if child:IsA("GuiButton") or child:IsA("TextButton") or child:IsA("ImageButton") then
+                    if child.BackgroundColor3 == Color3.fromRGB(230, 230, 230) then
+                        local OldPosition = child.Position
+                        child.Position = UDim2.new(-0.3, 0, 0, 0)
+                        clickGuiElement(child)
+                        child.Position = OldPosition
+                    end
+                end
+            end
+        end
+        MinigameSolverThread = false -- Reset khi hoàn thành hoặc dừng
+    end)
+end
 
 -- Hàm chạy vòng lặp câu cá
 local function startFishing()
@@ -153,8 +106,6 @@ local function startFishing()
             task.wait(0.1)
             
             local folder = getFishingFolder()
-            
-            solveColorMinigame()
             
             if not folder or not folder:FindFirstChild("Bobber") then
                 -- Chưa quăng cần -> Quăng cần
@@ -175,25 +126,19 @@ end
 --- PHẦN XỬ LÝ BẬT TẮT THEO UI CỦA BẠN
 --- ==========================================================
 
--- Thay 'FISHING_KEY' bằng biến/tên Key của nút Toggle câu cá trong UI của bạn
 _G.UI.addEventHandler("Fishing", function(enabled)
     isAutoFishing = enabled
     
     if enabled then
         startFishing()
+        startMinigameSolver()
     else
-        -- Khi tắt toggle, vòng lặp 'while isAutoFishing' sẽ tự dừng ở lượt kiểm tra kế tiếp
         print("🛑 Đã tắt Auto Câu Cá")
     end
 end)
 
 -- Xử lý khi tắt toàn bộ Tool/Script
 _G.UI.addStopHandler(function()
-    -- Cập nhật lại cài đặt trong UI nếu cần (Ví dụ: đặt tên là AutoFishing)
-    if _G.UI.settings then
-        _G.UI.settings.AutoFishing = false 
-    end
-    
     isAutoFishing = false
     print("🔌 Tool dừng hoạt động - Đã ngắt Auto Câu Cá")
 end)
